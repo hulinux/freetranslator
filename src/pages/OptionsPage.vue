@@ -4,6 +4,8 @@
     <q-card>
       <q-card-section class="about-font">
         {{ $t('about_this_extension') }}
+        <!-- https://github.com/hulinux/freetranslator/issues/new -->
+        <!-- https://github.com/hulinux/freetranslator/discussions/new -->
       </q-card-section>
     </q-card>
   </q-page>
