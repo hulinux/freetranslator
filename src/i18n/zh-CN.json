@@ -1,0 +1,9 @@
+{
+  "copy_translation": "拷贝",
+  "close_window": "关闭",
+  "saved_to_clipboard": "译文已复制到剪贴板",
+  "retry": "重试",
+  "translate_errors": "获取数据失败，请重试",
+  "words_limit": "请限制字符数在5000以内",
+  "about_this_extension": "一个非常简单的谷歌浏览器插件，选择要翻译的词句，随机从免费翻译服务提供商获得查询结果。"
+}

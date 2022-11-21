@@ -1,0 +1,9 @@
+{
+  "copy_translation": "Copy",
+  "close_window": "Close",
+  "saved_to_clipboard": "Translation is copied",
+  "retry": "Retry",
+  "translate_errors": "Get translate data error, please try again",
+  "words_limit": "Number of characters limited to 5000",
+  "about_this_extension": "A very simple Google browser plug-in, select the words or statements to be translated, and randomly obtain the query results from the free translation service provider."
+}
