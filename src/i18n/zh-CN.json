@@ -5,5 +5,7 @@
   "retry": "重试",
   "translate_errors": "获取数据失败，请重试",
   "words_limit": "请限制字符数在5000以内",
-  "about_this_extension": "一个非常简单的谷歌浏览器插件，选择要翻译的词句，随机从免费翻译服务提供商获得查询结果。"
+  "about_this_extension": "一个非常简单的谷歌浏览器扩展，选择要翻译的词句，点击翻译按钮即可获得查询结果。",
+  "feedback_questions": "反馈问题",
+  "make_suggestions": "提建议"
 }

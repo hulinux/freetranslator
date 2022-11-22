@@ -2,6 +2,7 @@
   <q-page>
     <q-card class="card">
       <q-card-section class="no-padding align-end">
+        <span style="padding-left: 4px"> </span>
         <!-- <q-btn flat round :icon="matCompareArrows" size="xs">
           <q-tooltip
             anchor="bottom middle"
@@ -15,28 +16,30 @@
         </q-btn> -->
         <!--{{ $t('success') }}TODO: shared.esm-bundler.js:54 [intlify] The message format compilation is not supported in this build. Because message compiler isn't included. You need to pre-compilation all message format. -->
         <!-- need data file in src/i18n,format must be json/yaml -->
-        <q-btn flat round :icon="matFileCopy" size="xs" @click="copyToClipboard">
-          <q-tooltip
-            anchor="bottom middle"
-            self="center middle"
-            transition-show="scale"
-            transition-hide="scale"
-            class="q-pa-xs"
-          >
-            {{ $t('copy_translation') }}</q-tooltip
-          >
-        </q-btn>
-        <q-btn flat round :icon="matClose" size="xs" @click="closePage">
-          <q-tooltip
-            anchor="bottom middle"
-            self="center middle"
-            transition-show="scale"
-            transition-hide="scale"
-            class="q-pa-xs"
-          >
-            {{ $t('close_window') }}</q-tooltip
-          >
-        </q-btn>
+        <div>
+          <q-btn flat round :icon="matFileCopy" size="xs" @click="copyToClipboard">
+            <q-tooltip
+              anchor="bottom middle"
+              self="center middle"
+              transition-show="scale"
+              transition-hide="scale"
+              class="q-pa-xs"
+            >
+              {{ $t('copy_translation') }}</q-tooltip
+            >
+          </q-btn>
+          <q-btn flat round :icon="matClose" size="xs" @click="closePage">
+            <q-tooltip
+              anchor="bottom middle"
+              self="center middle"
+              transition-show="scale"
+              transition-hide="scale"
+              class="q-pa-xs"
+            >
+              {{ $t('close_window') }}</q-tooltip
+            >
+          </q-btn>
+        </div>
         <!-- <div class="text-area">by John Doe</div> -->
       </q-card-section>
       <q-separator />
@@ -66,14 +69,16 @@
               <div v-show="result.data?.translated" style="white-space: pre-line">
                 {{ result.data?.translated }}
               </div>
-              <span v-show="result.data?.translator">
-                [{{ result.data?.translator }}]
-              </span>
             </q-scroll-area>
           </div>
         </transition>
       </q-card-section>
-
+      <q-card-section class="no-padding align-end" v-if="result?.data?.translator">
+        <div></div>
+        <div style="padding: 4px">
+          <q-badge outline rounded color="orange" :label="result?.data?.translator" />
+        </div>
+      </q-card-section>
       <q-inner-loading :showing="!result.status">
         <q-spinner-grid size="50px" />
       </q-inner-loading>
@@ -92,7 +97,7 @@ const $q = useQuasar();
 
 const result = reactive<{ status?: string; data?: Translation | object }>({});
 const translateSource = inject<TranslationRequest>('translateSource');
-const [winWidth, winHeight] = [ref('270px'), ref('220px')];
+const [winWidth, winHeight] = [ref('300px'), ref('250px')];
 // console.log('translate data:', translateSource);
 
 const closePage = async function () {
@@ -148,7 +153,8 @@ onMounted(async () => {
   font-size: 12px
 .align-end
   display: flex
-  justify-content: flex-end
+  justify-content: space-between
+  align-items: center
 .tip-center
   text-align: center
   display: flex

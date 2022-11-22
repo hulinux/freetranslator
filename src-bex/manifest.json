@@ -21,7 +21,7 @@
     {
       "matches": ["*://*/*"],
       "css": ["assets/content.css"],
-      "js": ["page-content-script.js", "iframe-content-script.js"]
+      "js": ["page-content-script.js"]
     }
   ],
 

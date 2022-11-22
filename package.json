@@ -2,7 +2,7 @@
   "name": "freetranslator",
   "version": "0.22.11",
   "description": "A Translate Browser Extension",
-  "productName": "Free Translator",
+  "productName": "1-Click Translator",
   "author": "Hulinux <huling4u@163.com>",
   "private": true,
   "scripts": {

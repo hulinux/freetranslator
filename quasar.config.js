@@ -118,9 +118,9 @@ module.exports = configure(function (/* ctx */) {
       plugins: ['Notify'],
     },
 
-    animations: 'all', // --- includes all animations
+    // animations: 'all', // --- includes all animations
     // https://v2.quasar.dev/options/animations
-    // animations: [],
+    animations: ['fadeOut', 'fadeIn'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#sourcefiles
     // sourceFiles: {
@@ -208,7 +208,7 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-browser-extensions/configuring-bex
     bex: {
-      contentScripts: ['page-content-script', 'iframe-content-script'],
+      contentScripts: ['page-content-script'],
 
       // extendBexScriptsConf (esbuildConf) {}
       // extendBexManifestJson (json) {}
