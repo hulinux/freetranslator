@@ -12,6 +12,7 @@ interface FrameSize {
 let iFrame: HTMLIFrameElement;
 let selectedText: string | undefined;
 
+//以唯一id来锚定
 const UUID = `bex-iframe-${Date.now()}`;
 const START_URL = `www/index.html#/popup?id=${UUID}`;
 const SET_SIZE = `${UUID}.set.iframe.window.size`;
@@ -31,7 +32,7 @@ const createiFrame = function (url: string) {
   if (!iFrame) {
     iFrame = document.createElement('iframe');
     iFrame.id = UUID;
-    iFrame.src = chrome.runtime.getURL(url); //以唯一id来锚定
+    iFrame.src = chrome.runtime.getURL(url);
     iFrame.hidden = true;
     iFrame.style.display = 'none';
     document.body.prepend(iFrame);
