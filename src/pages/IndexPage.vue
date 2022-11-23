@@ -2,7 +2,7 @@
   <q-page>
     <q-card class="card">
       <q-card-section class="no-padding align-end">
-        <span style="padding-left: 4px"> </span>
+        <span style="padding-left: 4px"></span>
         <!-- <q-btn flat round :icon="matCompareArrows" size="xs">
           <q-tooltip
             anchor="bottom middle"
@@ -17,7 +17,14 @@
         <!--{{ $t('success') }}TODO: shared.esm-bundler.js:54 [intlify] The message format compilation is not supported in this build. Because message compiler isn't included. You need to pre-compilation all message format. -->
         <!-- need data file in src/i18n,format must be json/yaml -->
         <div>
-          <q-btn flat round :icon="matFileCopy" size="xs" @click="copyToClipboard">
+          <q-btn
+            flat
+            round
+            :icon="matFileCopy"
+            size="xs"
+            @click="copyToClipboard"
+            v-show="result.status == '200'"
+          >
             <q-tooltip
               anchor="bottom middle"
               self="center middle"
@@ -51,10 +58,7 @@
         >
           <div class="text-area">
             <q-scroll-area class="card-12">
-              <div
-                class="card-12 tip-center"
-                v-show="result.data?.errors && result.status"
-              >
+              <div class="card-12 tip-center" v-show="result.status == '500'">
                 <q-btn
                   icon="refresh"
                   size="xl"
@@ -66,17 +70,28 @@
                   {{ $t('translate_errors') }}<br />({{ $t('words_limit') }})
                 </p>
               </div>
-              <div v-show="result.data?.translated" style="white-space: pre-line">
+              <div
+                v-show="result.data?.translated"
+                style="white-space: pre-line"
+              >
                 {{ result.data?.translated }}
               </div>
             </q-scroll-area>
           </div>
         </transition>
       </q-card-section>
-      <q-card-section class="no-padding align-end" v-if="result?.data?.translator">
+      <q-card-section
+        class="no-padding align-end"
+        v-if="result?.data?.translator"
+      >
         <div></div>
         <div style="padding: 4px">
-          <q-badge outline rounded color="orange" :label="result?.data?.translator" />
+          <q-badge
+            outline
+            rounded
+            color="orange"
+            :label="result?.data?.translator"
+          />
         </div>
       </q-card-section>
       <q-inner-loading :showing="!result.status">
@@ -91,23 +106,29 @@ import { useQuasar } from 'quasar';
 import { inject, onMounted, reactive, ref } from 'vue';
 import { api } from 'boot/axios';
 import { TranslationRequest, Translation } from '../services/interfaces';
-import { matFileCopy, matCompareArrows, matClose } from '@quasar/extras/material-icons';
+import { matFileCopy, matClose } from '@quasar/extras/material-icons';
 
 const $q = useQuasar();
 
-const result = reactive<{ status?: string; data?: Translation | object }>({});
+const result = reactive<{ status?: string; data?: Translation }>({});
 const translateSource = inject<TranslationRequest>('translateSource');
 const [winWidth, winHeight] = [ref('300px'), ref('250px')];
 // console.log('translate data:', translateSource);
+const UUID = inject<string>('UUID');
+const CLOSE_WINDOW = `${UUID}.close.iframe.window`;
+const TO_CLIPBOARD = `${UUID}.copy.result.to.clipboard`;
+const SET_SIZE = `${UUID}.set.iframe.window.size`;
 
 const closePage = async function () {
-  await $q.bex.send('close.iframe.window');
+  await $q.bex.send(CLOSE_WINDOW);
 };
 const copyToClipboard = async function () {
   await $q.bex
-    .send('copy.result.to.clipboard', { text: result?.data?.translated })
+    .send(TO_CLIPBOARD, {
+      text: result?.data?.translated,
+    })
     .then((data) => {
-      console.log('copy.result.to.clipboard happend.', data);
+      console.log(TO_CLIPBOARD, data);
     });
 };
 
@@ -135,7 +156,7 @@ const fetchTranslateResult = async function () {
 };
 onMounted(async () => {
   // console.log('btn info:', btn.value.$el.getBoundingClientRect());
-  await $q.bex.send('set.iframe.window.size', {
+  await $q.bex.send(SET_SIZE, {
     height: winHeight.value,
     width: winWidth.value,
   });
@@ -147,9 +168,9 @@ onMounted(async () => {
   width: v-bind(winWidth)
   height: v-bind(winHeight)
 .card-12
-  height: 186px
+  height: 196px
 .text-area
-  padding: 6px 2px 6px 6px
+  padding: 0px 2px 0px 6px
   font-size: 12px
 .align-end
   display: flex

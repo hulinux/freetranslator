@@ -11,26 +11,93 @@ interface FrameSize {
 
 let iFrame: HTMLIFrameElement;
 let selectedText: string | undefined;
-const startURL = 'www/index.html#/popup';
+
+const UUID = `bex-iframe-${Date.now()}`;
+const START_URL = `www/index.html#/popup?id=${UUID}`;
+const SET_SIZE = `${UUID}.set.iframe.window.size`;
+const CLOSE_WINDOW = `${UUID}.close.iframe.window`;
+const ROUTE_RESET = `${UUID}.translate.page.route.reset`;
+const SELECTED_TEXT = `${UUID}.pick.tab.page.selected.text`;
+const CLIPBOARD_SUCCESSED = `${UUID}.write.data.to.clipboard.successed`;
+const TO_CLIPBOARD = `${UUID}.copy.result.to.clipboard`;
+
+const isSelectedNotChange = function (
+  oldSelected: string | undefined,
+  newSelected: string | undefined
+): boolean {
+  return oldSelected == newSelected;
+};
+const createiFrame = function (url: string) {
+  if (!iFrame) {
+    iFrame = document.createElement('iframe');
+    iFrame.id = UUID;
+    iFrame.src = chrome.runtime.getURL(url); //以唯一id来锚定
+    iFrame.hidden = true;
+    iFrame.style.display = 'none';
+    document.body.prepend(iFrame);
+  }
+};
+const hideIFrame = () => {
+  if (iFrame) {
+    iFrame.hidden = true;
+    Object.assign(iFrame.style, { display: 'none' });
+  } else {
+    createiFrame(START_URL);
+  }
+};
+
+const showIFrame = () => {
+  if (iFrame) {
+    iFrame.hidden = false;
+    Object.assign(iFrame.style, { display: 'block' });
+  } else {
+    createiFrame(START_URL);
+  }
+};
+const setFrameSize = function (frame: HTMLIFrameElement, size: FrameSize) {
+  frame.style.height =
+    size.height || frame.contentWindow?.document.body.clientHeight + 'px';
+  frame.style.width =
+    size.width || frame.contentWindow?.document.body.clientWidth + 'px';
+};
+
+createiFrame(START_URL);
 
 export default bexContent((bridge) => {
-  bridge.on('set.iframe.window.size', ({ data, respond }) => {
+  bridge.on(SET_SIZE, ({ data, respond }) => {
     setFrameSize(iFrame, data);
-    console.log('set.iframe.window.size occurred', data);
+    console.log(SET_SIZE, data);
     respond();
   });
 
-  bridge.on('close.iframe.window', () => {
+  bridge.on(CLOSE_WINDOW, ({ respond }) => {
     hideIFrame();
-    bridge.send('translate.page.route.reset');
-    // respond(data);
+    bridge.send(ROUTE_RESET);
+    respond();
   });
 
-  bridge.on('copy.result.to.clipboard', ({ data, respond }) => {
+  bridge.on(TO_CLIPBOARD, ({ data, respond }) => {
     navigator.clipboard.writeText(data.text).then(
-      (data) => {
+      (d) => {
         //clipboard successfully set
-        bridge.send('write.data.to.clipboard.successed', data);
+        bridge.send(CLIPBOARD_SUCCESSED, {
+          data,
+          d,
+        });
+        const k = Date.now().toString();
+        const v = {
+          source: selectedText,
+          translated: data.text,
+        };
+        bridge.send('storage.set', { key: k, value: v.toString() }).then(
+          (s) => {
+            console.log('storage.set:', s);
+          },
+          (err) => {
+            console.log(err);
+            //clipboard write failed, use fallback
+          }
+        );
         // respond(data);
       },
       (err) => {
@@ -38,7 +105,7 @@ export default bexContent((bridge) => {
         //clipboard write failed, use fallback
       }
     );
-    respond();
+    respond(data);
   });
 
   window.addEventListener('mouseup', (event) => {
@@ -46,7 +113,7 @@ export default bexContent((bridge) => {
     const currentSelected = window.getSelection()?.toString();
     if (isSelectedNotChange(selectedText, currentSelected)) {
       hideIFrame();
-      bridge.send('translate.page.route.reset', event);
+      bridge.send(ROUTE_RESET, event);
       selectedText = '';
       return false;
     } else {
@@ -65,57 +132,18 @@ export default bexContent((bridge) => {
     };
     if (selectedText?.trim()) {
       Object.assign(iFrame.style, opts);
-      bridge.send('pick.tab.page.selected.text', { source: selectedText });
+      bridge.send(SELECTED_TEXT, {
+        source: selectedText,
+      });
       showIFrame();
       // console.log(selectedText, document.body);
     } else {
       hideIFrame();
-      bridge.send('translate.page.route.reset', event);
+      bridge.send(ROUTE_RESET, event);
     }
   });
 });
 
-const isSelectedNotChange = function (
-  oldSelected: string | undefined,
-  newSelected: string | undefined
-): boolean {
-  return oldSelected == newSelected;
-};
-const createiFrame = function (url: string) {
-  if (!iFrame) {
-    iFrame = document.createElement('iframe');
-    iFrame.id = `bex-iframe-${Date.now()}`;
-    iFrame.src = chrome.runtime.getURL(url);
-    iFrame.hidden = true;
-    iFrame.style.display = 'none';
-    document.body.prepend(iFrame);
-  }
-};
-const hideIFrame = () => {
-  if (iFrame) {
-    iFrame.hidden = true;
-    Object.assign(iFrame.style, { display: 'none' });
-  } else {
-    createiFrame(startURL);
-  }
-};
-
-const showIFrame = () => {
-  if (iFrame) {
-    iFrame.hidden = false;
-    Object.assign(iFrame.style, { display: 'block' });
-  } else {
-    createiFrame(startURL);
-  }
-};
-const setFrameSize = function (frame: HTMLIFrameElement, size: FrameSize) {
-  frame.style.height =
-    size.height || frame.contentWindow?.document.body.clientHeight + 'px';
-  frame.style.width =
-    size.width || frame.contentWindow?.document.body.clientWidth + 'px';
-};
-
-createiFrame(startURL);
 /*
 async function main() {
   const pyodide = await loadPyodide({

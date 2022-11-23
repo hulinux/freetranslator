@@ -14,9 +14,11 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { onMounted } from 'vue';
+import { inject, onMounted } from 'vue';
 
 const $q = useQuasar();
+const UUID = inject<string>('UUID');
+const SET_SIZE = `${UUID}.set.iframe.window.size`;
 // const translateSource = inject('translateSource');
 
 // const clickHandler = function (e: Event, go) {
@@ -25,7 +27,7 @@ const $q = useQuasar();
 // };
 onMounted(async () => {
   // console.log('btn info:', btn.value.$el.getBoundingClientRect());
-  await $q.bex.send('set.iframe.window.size', {
+  await $q.bex.send(SET_SIZE, {
     height: '26px',
     width: '21px',
   });
