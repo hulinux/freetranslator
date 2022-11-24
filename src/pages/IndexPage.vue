@@ -107,6 +107,7 @@ import { inject, onMounted, reactive, ref } from 'vue';
 import { api } from 'boot/axios';
 import { TranslationRequest, Translation } from '../services/interfaces';
 import { matFileCopy, matClose } from '@quasar/extras/material-icons';
+import { ACTION_SUCCESSFUL } from '../../src-bex/dom';
 
 const $q = useQuasar();
 
@@ -127,8 +128,8 @@ const copyToClipboard = async function () {
     .send(TO_CLIPBOARD, {
       text: result?.data?.translated,
     })
-    .then((data) => {
-      console.log(TO_CLIPBOARD, data);
+    .then(async (data) => {
+      await $q.bex.send(ACTION_SUCCESSFUL, data);
     });
 };
 

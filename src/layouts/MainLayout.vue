@@ -42,7 +42,7 @@ onMounted(async () => {
     $q.notify({
       message: t('saved_to_clipboard'),
       position: 'center',
-      timeout: 750,
+      timeout: 550,
       badgeStyle: { display: 'none' },
     });
     respond(data);

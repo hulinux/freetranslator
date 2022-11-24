@@ -71,17 +71,17 @@ export default bexContent((bridge) => {
     respond();
   });
 
-  bridge.on(CLOSE_WINDOW, ({ respond }) => {
+  bridge.on(CLOSE_WINDOW, async ({ respond }) => {
     hideIFrame();
-    bridge.send(ROUTE_RESET);
+    await bridge.send(ROUTE_RESET);
     respond();
   });
 
   bridge.on(TO_CLIPBOARD, ({ data, respond }) => {
     navigator.clipboard.writeText(data.text).then(
-      (d) => {
+      async (d) => {
         //clipboard successfully set
-        bridge.send(CLIPBOARD_SUCCESSED, {
+        await bridge.send(CLIPBOARD_SUCCESSED, {
           data,
           d,
         });
@@ -90,15 +90,7 @@ export default bexContent((bridge) => {
           source: selectedText,
           translated: data.text,
         };
-        bridge.send('storage.set', { key: k, value: v.toString() }).then(
-          (s) => {
-            // console.log('storage.set:', s);
-          },
-          (err) => {
-            console.log(err);
-            //clipboard write failed, use fallback
-          }
-        );
+        await bridge.send('storage.set', { key: k, value: v });
         // respond(data);
       },
       (err) => {
@@ -109,12 +101,12 @@ export default bexContent((bridge) => {
     respond(data);
   });
 
-  window.addEventListener('mouseup', (event) => {
+  window.addEventListener('mouseup', async (event) => {
     //'selectionchange'
     const currentSelected = window.getSelection()?.toString();
     if (isSelectedNotChange(selectedText, currentSelected)) {
       hideIFrame();
-      bridge.send(ROUTE_RESET, event);
+      await bridge.send(ROUTE_RESET, event);
       selectedText = '';
       return false;
     } else {
@@ -133,14 +125,14 @@ export default bexContent((bridge) => {
     };
     if (selectedText?.trim()) {
       Object.assign(iFrame.style, opts);
-      bridge.send(SELECTED_TEXT, {
+      await bridge.send(SELECTED_TEXT, {
         source: selectedText,
       });
       showIFrame();
       // console.log(selectedText, document.body);
     } else {
       hideIFrame();
-      bridge.send(ROUTE_RESET, event);
+      await bridge.send(ROUTE_RESET, event);
     }
   });
 });
