@@ -105,6 +105,8 @@
 import { useQuasar } from 'quasar';
 import { inject, onMounted, reactive, ref } from 'vue';
 import { api } from 'boot/axios';
+import { franc } from 'franc';
+import { iso6393To1 } from '../services/iso6393-to-1';
 import { TranslationRequest, Translation } from '../services/interfaces';
 import { matFileCopy, matClose } from '@quasar/extras/material-icons';
 import { ACTION_SUCCESSFUL } from '../../src-bex/dom';
@@ -134,6 +136,7 @@ const copyToClipboard = async function () {
 };
 
 const fetchTranslateResult = async function () {
+  const fl = iso6393To1[franc(translateSource?.source, { minLength: 5 })];
   result.status = '';
   await api
     .post(
@@ -141,9 +144,9 @@ const fetchTranslateResult = async function () {
       'https://lci8gq9r.directus.app/flows/trigger/84b3c03c-93a4-4620-8931-5b750e420810',
       {
         source: translateSource?.source, //.replace(/[\r\n]/g, '\\n'),
-        from_lang: translateSource?.from_lang || 'auto',
+        from_lang: fl || 'auto',
         to_lang: translateSource?.to_lang || navigator.language, //.split('-')[0], //取前两位扩大翻译器选择范围
-        // translator: translateSource?.translator || 'baidu',
+        translator: translateSource?.translator,
       }
     )
     .then((res) => {
@@ -154,6 +157,7 @@ const fetchTranslateResult = async function () {
       Object.assign(result, err.response);
       // console.log(err, result);
     });
+  console.log(`from language is: ${fl}`, franc(translateSource?.source));
 };
 onMounted(async () => {
   // console.log('btn info:', btn.value.$el.getBoundingClientRect());
