@@ -67,7 +67,7 @@ createiFrame(START_URL);
 export default bexContent((bridge) => {
   bridge.on(SET_SIZE, ({ data, respond }) => {
     setFrameSize(iFrame, data);
-    console.log(SET_SIZE, data);
+    // console.log(SET_SIZE, data);
     respond();
   });
 
@@ -92,7 +92,7 @@ export default bexContent((bridge) => {
         };
         bridge.send('storage.set', { key: k, value: v.toString() }).then(
           (s) => {
-            console.log('storage.set:', s);
+            // console.log('storage.set:', s);
           },
           (err) => {
             console.log(err);

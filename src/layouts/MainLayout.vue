@@ -26,7 +26,7 @@ const SELECTED_TEXT = `${UUID}.pick.tab.page.selected.text`;
 const CLIPBOARD_SUCCESSED = `${UUID}.write.data.to.clipboard.successed`;
 
 onMounted(async () => {
-  console.log('route parameters', route.query);
+  // console.log('route parameters', route.query);
   $q.dark.set('auto');
   $q.bex.on(SELECTED_TEXT, ({ data, respond }) => {
     Object.assign(translateSource, data);
