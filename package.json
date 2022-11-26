@@ -1,6 +1,6 @@
 {
   "name": "freetranslator",
-  "version": "0.22.12",
+  "version": "0.22.13",
   "description": "A Translate Browser Extension",
   "productName": "1-Click Translator",
   "author": "Hulinux <huling4u@163.com>",
@@ -14,7 +14,7 @@
     "@quasar/extras": "^1.15.5",
     "axios": "^1.1.3",
     "events": "^3.3.0",
-    "franc": "^6.1.0",
+    "iso-639-3": "^3.0.1",
     "quasar": "^2.10.0",
     "url": "^0.11.0",
     "vue": "^3.2.41",
