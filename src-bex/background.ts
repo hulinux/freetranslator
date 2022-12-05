@@ -13,6 +13,9 @@ chrome.runtime.onInstalled.addListener(() => {
       }
     );
   });
+  // chrome.action.setBadgeText({
+  //   text: 'OFF',
+  // });
 });
 
 declare module '@quasar/app-vite' {
@@ -56,6 +59,7 @@ export default bexBackground((bridge /* , allActiveConnections */) => {
 
   bridge.on('storage.set', ({ data, respond }) => {
     chrome.storage.local.set({ [data.key]: data.value }, () => {
+      console.log('storage.set', data);
       respond();
     });
   });

@@ -67,7 +67,7 @@ createiFrame(START_URL);
 export default bexContent((bridge) => {
   bridge.on(SET_SIZE, ({ data, respond }) => {
     setFrameSize(iFrame, data);
-    // console.log(SET_SIZE, data);
+    console.log(SET_SIZE, data);
     respond();
   });
 

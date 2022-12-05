@@ -17,81 +17,41 @@
         <!--{{ $t('success') }}TODO: shared.esm-bundler.js:54 [intlify] The message format compilation is not supported in this build. Because message compiler isn't included. You need to pre-compilation all message format. -->
         <!-- need data file in src/i18n,format must be json/yaml -->
         <div>
-          <q-btn
-            flat
-            round
-            :icon="matFileCopy"
-            size="xs"
-            @click="copyToClipboard"
-            v-show="result.status == '200'"
-          >
-            <q-tooltip
-              anchor="bottom middle"
-              self="center middle"
-              transition-show="scale"
-              transition-hide="scale"
-              class="q-pa-xs"
-            >
-              {{ $t('copy_translation') }}</q-tooltip
-            >
+          <q-btn flat round :icon="matFileCopy" size="xs" @click="copyToClipboard" v-show="result.status == '200'">
+            <q-tooltip anchor="bottom middle" self="center middle" transition-show="scale" transition-hide="scale"
+              class="q-pa-xs">
+              {{ $t('copy_translation') }}</q-tooltip>
           </q-btn>
           <q-btn flat round :icon="matClose" size="xs" @click="closePage">
-            <q-tooltip
-              anchor="bottom middle"
-              self="center middle"
-              transition-show="scale"
-              transition-hide="scale"
-              class="q-pa-xs"
-            >
-              {{ $t('close_window') }}</q-tooltip
-            >
+            <q-tooltip anchor="bottom middle" self="center middle" transition-show="scale" transition-hide="scale"
+              class="q-pa-xs">
+              {{ $t('close_window') }}</q-tooltip>
           </q-btn>
         </div>
         <!-- <div class="text-area">by John Doe</div> -->
       </q-card-section>
       <q-separator />
       <q-card-section class="no-padding">
-        <transition
-          appear
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut"
-        >
+        <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
           <div class="text-area">
             <q-scroll-area class="card-12">
               <div class="card-12 tip-center" v-show="result.status == '500'">
-                <q-btn
-                  icon="refresh"
-                  size="xl"
-                  flat
-                  round
-                  @click="fetchTranslateResult"
-                />
+                <q-btn icon="refresh" size="xl" flat round @click="fetchTranslateResult" />
                 <p class="center">
                   {{ $t('translate_errors') }}<br />({{ $t('words_limit') }})
                 </p>
               </div>
-              <div
-                v-show="result.data?.translated"
-                style="white-space: pre-line"
-              >
+              <div v-show="result.data?.translated" style="white-space: pre-line">
                 {{ result.data?.translated }}
               </div>
             </q-scroll-area>
           </div>
         </transition>
       </q-card-section>
-      <q-card-section
-        class="no-padding align-end"
-        v-if="result?.data?.translator"
-      >
+      <q-card-section class="no-padding align-end" v-if="result?.data?.translator">
         <div></div>
         <div style="padding: 4px">
-          <q-badge
-            outline
-            rounded
-            color="orange"
-            :label="result?.data?.translator"
-          />
+          <q-badge outline rounded color="orange" :label="result?.data?.translator" />
         </div>
       </q-card-section>
       <q-inner-loading :showing="!result.status">
@@ -107,7 +67,6 @@ import { inject, onMounted, reactive, ref } from 'vue';
 import { api } from 'boot/axios';
 import { TranslationRequest, Translation } from '../services/interfaces';
 import { matFileCopy, matClose } from '@quasar/extras/material-icons';
-import { ACTION_SUCCESSFUL } from '../../src-bex/dom';
 
 const $q = useQuasar();
 
@@ -129,7 +88,10 @@ const copyToClipboard = async function () {
       text: result?.data?.translated,
     })
     .then(async (data) => {
-      await $q.bex.send(ACTION_SUCCESSFUL, data);
+      await $q.bex.send('storage.set', {
+        key: Date.now().toString(),
+        value: data,
+      });
     });
 };
 
