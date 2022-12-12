@@ -3,40 +3,76 @@
     <q-card class="card">
       <q-card-section class="no-padding align-end">
         <span style="padding-left: 4px"></span>
-        <!-- <q-btn flat round :icon="matCompareArrows" size="xs">
-          <q-tooltip
-            anchor="bottom middle"
-            self="center middle"
-            transition-show="scale"
-            transition-hide="scale"
-            class="q-pa-xs"
-          >
-            交换翻译</q-tooltip
-          >
-        </q-btn> -->
         <!--{{ $t('success') }}TODO: shared.esm-bundler.js:54 [intlify] The message format compilation is not supported in this build. Because message compiler isn't included. You need to pre-compilation all message format. -->
         <!-- need data file in src/i18n,format must be json/yaml -->
         <div>
-          <q-btn flat round :icon="matFileCopy" size="xs" @click="copyToClipboard" v-show="result.status == '200'">
-            <q-tooltip anchor="bottom middle" self="center middle" transition-show="scale" transition-hide="scale"
-              class="q-pa-xs">
-              {{ $t('copy_translation') }}</q-tooltip>
+          <q-btn
+            flat
+            round
+            :icon="matHistory"
+            :to="{ name: 'history' }"
+            :replace="true"
+            size="xs"
+          >
+            <q-tooltip
+              anchor="bottom middle"
+              self="center middle"
+              transition-show="scale"
+              transition-hide="scale"
+              class="q-pa-xs"
+            >
+              {{ $t('view_history') }}</q-tooltip
+            >
+          </q-btn>
+          <q-btn
+            flat
+            round
+            :icon="matFileCopy"
+            size="xs"
+            @click="copyToClipboard"
+            v-show="result.status == '200'"
+          >
+            <q-tooltip
+              anchor="bottom middle"
+              self="center middle"
+              transition-show="scale"
+              transition-hide="scale"
+              class="q-pa-xs"
+            >
+              {{ $t('copy_translation') }}</q-tooltip
+            >
           </q-btn>
           <q-btn flat round :icon="matClose" size="xs" @click="closePage">
-            <q-tooltip anchor="bottom middle" self="center middle" transition-show="scale" transition-hide="scale"
-              class="q-pa-xs">
-              {{ $t('close_window') }}</q-tooltip>
+            <q-tooltip
+              anchor="bottom middle"
+              self="center middle"
+              transition-show="scale"
+              transition-hide="scale"
+              class="q-pa-xs"
+            >
+              {{ $t('close_window') }}</q-tooltip
+            >
           </q-btn>
         </div>
         <!-- <div class="text-area">by John Doe</div> -->
       </q-card-section>
       <q-separator />
       <q-card-section class="no-padding">
-        <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
+        <transition
+          appear
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut"
+        >
           <div class="text-area">
             <q-scroll-area class="card-12">
               <div class="card-12 tip-center" v-show="result.status == '500'">
-                <q-btn icon="refresh" size="xl" flat round @click="fetchTranslateResult" />
+                <q-btn
+                  icon="refresh"
+                  size="xl"
+                  flat
+                  round
+                  @click="fetchTranslateResult"
+                />
                 <p class="center">
                   {{ $t('translate_errors') }}<br />({{ $t('words_limit') }})
                 </p>
@@ -66,7 +102,13 @@ import { useQuasar } from 'quasar';
 import { inject, onMounted, reactive, ref } from 'vue';
 import { api } from 'boot/axios';
 import { TranslationRequest, Translation } from '../services/interfaces';
-import { matFileCopy, matClose } from '@quasar/extras/material-icons';
+import {
+  EVENT_CLOSE_WINDOW,
+  EVENT_COPY_TO_CLIPBOARD,
+  EVENT_SET_SIZE,
+  EVENT_STORAGE_SET,
+} from '../services/constants';
+import { matFileCopy, matClose, matHistory } from '@quasar/extras/material-icons';
 
 const $q = useQuasar();
 
@@ -74,25 +116,21 @@ const result = reactive<{ status?: string; data?: Translation }>({});
 const translateSource = inject<TranslationRequest>('translateSource');
 const [winWidth, winHeight] = [ref('300px'), ref('250px')];
 // console.log('translate data:', translateSource);
-const UUID = inject<string>('UUID');
-const CLOSE_WINDOW = `${UUID}.close.iframe.window`;
-const TO_CLIPBOARD = `${UUID}.copy.result.to.clipboard`;
-const SET_SIZE = `${UUID}.set.iframe.window.size`;
+// const UUID = inject<string>('UUID');
+// const CLOSE_WINDOW = `${UUID}.close.iframe.window`;
+// const TO_CLIPBOARD = `${UUID}.copy.result.to.clipboard`;
+// const SET_SIZE = `${UUID}.set.iframe.window.size`;
 
 const closePage = async function () {
-  await $q.bex.send(CLOSE_WINDOW);
+  await $q.bex.send(EVENT_CLOSE_WINDOW);
 };
 const copyToClipboard = async function () {
-  await $q.bex
-    .send(TO_CLIPBOARD, {
-      text: result?.data?.translated,
-    })
-    .then(async (data) => {
-      await $q.bex.send('storage.set', {
-        key: Date.now().toString(),
-        value: data,
-      });
+  await $q.bex.send(EVENT_COPY_TO_CLIPBOARD, result?.data).then(async (data) => {
+    await $q.bex.send(EVENT_STORAGE_SET, {
+      key: Date.now().toString(),
+      value: Object.assign(data.data, { source: translateSource?.source }),
     });
+  });
 };
 
 const fetchTranslateResult = async function () {
@@ -119,7 +157,7 @@ const fetchTranslateResult = async function () {
 };
 onMounted(async () => {
   // console.log('btn info:', btn.value.$el.getBoundingClientRect());
-  await $q.bex.send(SET_SIZE, {
+  await $q.bex.send(EVENT_SET_SIZE, {
     height: winHeight.value,
     width: winWidth.value,
   });

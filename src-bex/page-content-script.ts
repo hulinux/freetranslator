@@ -3,6 +3,16 @@
 
 import { bexContent } from 'quasar/wrappers';
 // import { loadPyodide } from 'pyodide';
+import {
+  UUID,
+  START_URL,
+  EVENT_SET_SIZE,
+  EVENT_CLOSE_WINDOW,
+  EVENT_ROUTE_RESET,
+  EVENT_SELECTED_TEXT,
+  EVENT_WRITE_CLIPBOARD_SUCCESSED,
+  EVENT_COPY_TO_CLIPBOARD,
+} from '../src/services/constants';
 
 interface FrameSize {
   height: string;
@@ -12,21 +22,11 @@ interface FrameSize {
 let iFrame: HTMLIFrameElement;
 let selectedText: string | undefined;
 
-//以唯一id来锚定
-const UUID = `bex-iframe-${Date.now()}`;
-const START_URL = `www/index.html#/popup?id=${UUID}`;
-const SET_SIZE = `${UUID}.set.iframe.window.size`;
-const CLOSE_WINDOW = `${UUID}.close.iframe.window`;
-const ROUTE_RESET = `${UUID}.translate.page.route.reset`;
-const SELECTED_TEXT = `${UUID}.pick.tab.page.selected.text`;
-const CLIPBOARD_SUCCESSED = `${UUID}.write.data.to.clipboard.successed`;
-const TO_CLIPBOARD = `${UUID}.copy.result.to.clipboard`;
-
 const isSelectedNotChange = function (
   oldSelected: string | undefined,
   newSelected: string | undefined
 ): boolean {
-  return oldSelected == newSelected;
+  return oldSelected?.trim() == newSelected?.trim();
 };
 const createiFrame = function (url: string) {
   if (!iFrame) {
@@ -65,33 +65,23 @@ const setFrameSize = function (frame: HTMLIFrameElement, size: FrameSize) {
 createiFrame(START_URL);
 
 export default bexContent((bridge) => {
-  bridge.on(SET_SIZE, ({ data, respond }) => {
+  bridge.on(EVENT_SET_SIZE, ({ data, respond }) => {
     setFrameSize(iFrame, data);
-    console.log(SET_SIZE, data);
+    // console.log(EVENT_SET_SIZE, data);
     respond();
   });
 
-  bridge.on(CLOSE_WINDOW, async ({ respond }) => {
+  bridge.on(EVENT_CLOSE_WINDOW, async ({ respond }) => {
     hideIFrame();
-    await bridge.send(ROUTE_RESET);
+    await bridge.send(EVENT_ROUTE_RESET);
     respond();
   });
 
-  bridge.on(TO_CLIPBOARD, ({ data, respond }) => {
-    navigator.clipboard.writeText(data.text).then(
-      async (d) => {
+  bridge.on(EVENT_COPY_TO_CLIPBOARD, ({ data, respond }) => {
+    navigator.clipboard.writeText(data?.translated).then(
+      async (data) => {
         //clipboard successfully set
-        await bridge.send(CLIPBOARD_SUCCESSED, {
-          data,
-          d,
-        });
-        const k = Date.now().toString();
-        const v = {
-          source: selectedText,
-          translated: data.text,
-        };
-        await bridge.send('storage.set', { key: k, value: v });
-        // respond(data);
+        await bridge.send(EVENT_WRITE_CLIPBOARD_SUCCESSED, data);
       },
       (err) => {
         console.log(err);
@@ -104,9 +94,12 @@ export default bexContent((bridge) => {
   window.addEventListener('mouseup', async (event) => {
     //'selectionchange'
     const currentSelected = window.getSelection()?.toString();
-    if (isSelectedNotChange(selectedText, currentSelected)) {
+    if (
+      isSelectedNotChange(selectedText, currentSelected) ||
+      currentSelected == ''
+    ) {
       hideIFrame();
-      await bridge.send(ROUTE_RESET, event);
+      await bridge.send(EVENT_ROUTE_RESET, event);
       selectedText = '';
       return false;
     } else {
@@ -123,16 +116,17 @@ export default bexContent((bridge) => {
       'border-radius': '4px',
       'box-shadow': 'grey 1px 1px 4px',
     };
-    if (selectedText?.trim()) {
+    if (selectedText) {
       Object.assign(iFrame.style, opts);
-      await bridge.send(SELECTED_TEXT, {
+      // console.log(`${EVENT_SELECTED_TEXT}`);
+      await bridge.send(EVENT_SELECTED_TEXT, {
         source: selectedText,
       });
       showIFrame();
       // console.log(selectedText, document.body);
     } else {
       hideIFrame();
-      await bridge.send(ROUTE_RESET, event);
+      await bridge.send(EVENT_ROUTE_RESET, event);
     }
   });
 });

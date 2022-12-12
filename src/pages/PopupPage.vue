@@ -14,11 +14,11 @@
 
 <script setup lang="ts">
 import { useQuasar } from 'quasar';
-import { inject, onMounted } from 'vue';
-
+import { onMounted } from 'vue';
+import { EVENT_SET_SIZE } from '../services/constants';
 const $q = useQuasar();
-const UUID = inject<string>('UUID');
-const SET_SIZE = `${UUID}.set.iframe.window.size`;
+// const UUID = inject<string>('UUID');
+// const SET_SIZE = `${UUID}.set.iframe.window.size`;
 // const translateSource = inject('translateSource');
 
 // const clickHandler = function (e: Event, go) {
@@ -27,7 +27,7 @@ const SET_SIZE = `${UUID}.set.iframe.window.size`;
 // };
 onMounted(async () => {
   // console.log('btn info:', btn.value.$el.getBoundingClientRect());
-  await $q.bex.send(SET_SIZE, {
+  await $q.bex.send(EVENT_SET_SIZE, {
     height: '26px',
     width: '21px',
   });

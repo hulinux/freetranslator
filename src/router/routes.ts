@@ -20,6 +20,11 @@ const routes: RouteRecordRaw[] = [
         path: '/popup',
         component: () => import('pages/PopupPage.vue'),
       },
+      {
+        name: 'history',
+        path: '/history',
+        component: () => import('pages/HistoriesPage.vue'),
+      },
     ],
   },
 

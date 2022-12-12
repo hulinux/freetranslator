@@ -16,17 +16,26 @@ chrome.runtime.onInstalled.addListener(() => {
   // chrome.action.setBadgeText({
   //   text: 'OFF',
   // });
+  // const key = 'myKey';
+  // const value = { name: 'my value' };
+  // chrome.storage.local.set({ [key]: value }, () => {
+  //   console.log('Stored name: ' + value.name);
+  // });
+  // chrome.storage.local.get([key], (result) => {
+  //   console.log('Retrieved name: ' + result.myKey.name);
+  // });
 });
 
 declare module '@quasar/app-vite' {
   interface BexEventMap {
     /* eslint-disable @typescript-eslint/no-explicit-any */
     log: [{ message: string; data?: any[] }, never];
-    getTime: [never, number];
+    'get.time': [never, number];
 
     'storage.get': [{ key: string | null }, any];
     'storage.set': [{ key: string; value: any }, any];
     'storage.remove': [{ key: string }, any];
+    'storage.clear': [never, any];
     /* eslint-enable @typescript-eslint/no-explicit-any */
   }
 }
@@ -37,7 +46,7 @@ export default bexBackground((bridge /* , allActiveConnections */) => {
     respond();
   });
 
-  bridge.on('getTime', ({ respond }) => {
+  bridge.on('get.time', ({ respond }) => {
     respond(Date.now());
   });
 
@@ -46,7 +55,7 @@ export default bexBackground((bridge /* , allActiveConnections */) => {
     if (key === null) {
       chrome.storage.local.get(null, (items) => {
         // Group the values up into an array to take advantage of the bridge's chunk splitting.
-        respond(Object.values(items));
+        respond(items);
       });
     } else {
       chrome.storage.local.get([key], (items) => {
@@ -59,7 +68,7 @@ export default bexBackground((bridge /* , allActiveConnections */) => {
 
   bridge.on('storage.set', ({ data, respond }) => {
     chrome.storage.local.set({ [data.key]: data.value }, () => {
-      console.log('storage.set', data);
+      // console.log('storage.set', data);
       respond();
     });
   });
@@ -73,6 +82,19 @@ export default bexBackground((bridge /* , allActiveConnections */) => {
   });
   // Usage:
   // await bridge.send('storage.remove', { key: 'someKey' })
+
+  bridge.on('storage.clear', ({ respond }) => {
+    // console.log('storage.clear', respond);
+    chrome.storage.local.clear(() => {
+      const error = chrome.runtime.lastError;
+      if (error) {
+        console.error(error);
+      }
+      respond();
+    });
+  });
+  // Usage:
+  // await bridge.send('storage.clear')
 
   /*
   // EXAMPLES

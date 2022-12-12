@@ -7,5 +7,7 @@
   "words_limit": "Number of characters limited to 5000",
   "about_this_extension": "A very simple Google browser plug-in, select the words or statements to bA very simple Google browser extension, select the words to translate, click the translate button to get the query results.",
   "feedback_questions": "Feedback questions",
-  "make_suggestions": "Make suggestions"
+  "make_suggestions": "Make suggestions",
+  "view_history": "View history",
+  "delete_all": "Delete all"
 }
