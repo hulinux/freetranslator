@@ -109,12 +109,10 @@ onMounted(async () => {
   text-align: right
 .detail
   text-align: left
-  border-width: 1px 1px 1px 3px
+  border-width: 0px 0px 0px 3px
   border-style: solid
   border-color: #0000001f
   border-radius: 3px
-.r-color
-  border-right-color: #00b4ff
 .l-color
   border-left-color: #00b4ff
 .l-color2
