@@ -96,11 +96,12 @@ export default bexContent((bridge) => {
     const currentSelected = window.getSelection()?.toString();
     if (
       isSelectedNotChange(selectedText, currentSelected) ||
-      currentSelected == ''
+      currentSelected?.trim() == '' ||
+      selectedText?.trim() == ''
     ) {
       hideIFrame();
       await bridge.send(EVENT_ROUTE_RESET, event);
-      selectedText = '';
+      // selectedText = '';
       return false;
     } else {
       selectedText = currentSelected;
@@ -129,8 +130,14 @@ export default bexContent((bridge) => {
       await bridge.send(EVENT_ROUTE_RESET, event);
     }
   });
+  // window.document.addEventListener('selectionchange', () => {
+  //   console.log(
+  //     window.document.getSelection(),
+  //     'selected text',
+  //     isSelectedNotChange(selectedText, window.getSelection()?.toString())
+  //   );
+  // });
 });
-
 /*
 async function main() {
   const pyodide = await loadPyodide({
