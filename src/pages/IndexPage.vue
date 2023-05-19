@@ -6,73 +6,31 @@
         <!--{{ $t('success') }}TODO: shared.esm-bundler.js:54 [intlify] The message format compilation is not supported in this build. Because message compiler isn't included. You need to pre-compilation all message format. -->
         <!-- need data file in src/i18n,format must be json/yaml -->
         <div>
-          <q-btn
-            flat
-            round
-            :icon="matHistory"
-            :to="{ name: 'history' }"
-            :replace="true"
-            size="xs"
-          >
-            <q-tooltip
-              anchor="bottom middle"
-              self="center middle"
-              transition-show="scale"
-              transition-hide="scale"
-              class="q-pa-xs"
-            >
-              {{ $t('view_history') }}</q-tooltip
-            >
+          <q-btn flat round :icon="matHistory" :to="{ name: 'history' }" :replace="true" size="xs">
+            <q-tooltip anchor="bottom middle" self="center middle" transition-show="scale" transition-hide="scale"
+              class="q-pa-xs">
+              {{ $t('view_history') }}</q-tooltip>
           </q-btn>
-          <q-btn
-            flat
-            round
-            :icon="matFileCopy"
-            size="xs"
-            @click="copyToClipboard"
-            v-show="result.status == '200'"
-          >
-            <q-tooltip
-              anchor="bottom middle"
-              self="center middle"
-              transition-show="scale"
-              transition-hide="scale"
-              class="q-pa-xs"
-            >
-              {{ $t('copy_translation') }}</q-tooltip
-            >
+          <q-btn flat round :icon="matFileCopy" size="xs" @click="copyToClipboard" v-show="result.status == '200'">
+            <q-tooltip anchor="bottom middle" self="center middle" transition-show="scale" transition-hide="scale"
+              class="q-pa-xs">
+              {{ $t('copy_translation') }}</q-tooltip>
           </q-btn>
           <q-btn flat round :icon="matClose" size="xs" @click="closePage">
-            <q-tooltip
-              anchor="bottom middle"
-              self="center middle"
-              transition-show="scale"
-              transition-hide="scale"
-              class="q-pa-xs"
-            >
-              {{ $t('close_window') }}</q-tooltip
-            >
+            <q-tooltip anchor="bottom middle" self="center middle" transition-show="scale" transition-hide="scale"
+              class="q-pa-xs">
+              {{ $t('close_window') }}</q-tooltip>
           </q-btn>
         </div>
         <!-- <div class="text-area">by John Doe</div> -->
       </q-card-section>
       <q-separator />
       <q-card-section class="no-padding">
-        <transition
-          appear
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut"
-        >
+        <transition appear enter-active-class="animated fadeIn" leave-active-class="animated fadeOut">
           <div class="text-area">
             <q-scroll-area class="card-12">
               <div class="card-12 tip-center" v-show="result.status == '500'">
-                <q-btn
-                  icon="refresh"
-                  size="xl"
-                  flat
-                  round
-                  @click="fetchTranslateResult"
-                />
+                <q-btn icon="refresh" size="xl" flat round @click="fetchTranslateResult" />
                 <p class="center">
                   {{ $t('translate_errors') }}<br />({{ $t('words_limit') }})
                 </p>
@@ -138,7 +96,7 @@ const fetchTranslateResult = async function () {
   await api
     .post(
       // 'https://dev.wjmdbetc.cn/flows/trigger/4b1d74bf-ec71-4527-b9be-cda6c1f8cf10',
-      'https://lci8gq9r.directus.app/flows/trigger/84b3c03c-93a4-4620-8931-5b750e420810',
+      'https://cn.play.ai/flows/trigger/eeb77613-6107-43ae-befb-647620dc7a22',
       {
         source: translateSource?.source, //.replace(/[\r\n]/g, '\\n'),
         from_lang: translateSource?.from_lang || 'auto',
