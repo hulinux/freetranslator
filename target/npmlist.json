@@ -1,1 +1,15 @@
-{"version":"0.22.16","name":"freetranslator","dependencies":{"@quasar/extras":{"version":"1.16.4"},"axios":{"version":"1.4.0"},"events":{"version":"3.3.0"},"iso-639-3":{"version":"3.0.1"},"quasar":{"version":"2.12.0"},"url":{"version":"0.11.0"},"vue-i18n":{"version":"9.2.2"},"vue-router":{"version":"4.2.1"},"vue":{"version":"3.3.4"}}}
+{
+  "version": "0.22.17",
+  "name": "freetranslator",
+  "dependencies": {
+    "@quasar/extras": { "version": "1.16.4" },
+    "axios": { "version": "1.4.0" },
+    "events": { "version": "3.3.0" },
+    "iso-639-3": { "version": "3.0.1" },
+    "quasar": { "version": "2.12.0" },
+    "url": { "version": "0.11.0" },
+    "vue-i18n": { "version": "9.2.2" },
+    "vue-router": { "version": "4.2.1" },
+    "vue": { "version": "3.3.4" }
+  }
+}

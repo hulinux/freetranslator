@@ -15,7 +15,7 @@ declare module '@vue/runtime-core' {
 // for each client)
 // const api = axios.create({ baseURL: 'https://dev.wjmdbetc.cn' });
 const api = axios.create({
-  baseURL: 'https://cn.play.ai/',
+  baseURL: 'https://huling.eu.org/',
 });
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api

@@ -96,7 +96,7 @@ const fetchTranslateResult = async function () {
   await api
     .post(
       // 'https://dev.wjmdbetc.cn/flows/trigger/4b1d74bf-ec71-4527-b9be-cda6c1f8cf10',
-      'https://cn.play.ai/flows/trigger/eeb77613-6107-43ae-befb-647620dc7a22',
+      'https://huling.eu.org/flows/trigger/eeb77613-6107-43ae-befb-647620dc7a22',
       {
         source: translateSource?.source, //.replace(/[\r\n]/g, '\\n'),
         from_lang: translateSource?.from_lang || 'auto',
