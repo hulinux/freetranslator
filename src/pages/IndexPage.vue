@@ -32,7 +32,8 @@
               <div class="card-12 tip-center" v-show="result.status == '500'">
                 <q-btn icon="refresh" size="xl" flat round @click="fetchTranslateResult" />
                 <p class="center">
-                  {{ $t('translate_errors') }}<br />({{ $t('words_limit') }})
+                  {{ $t('translate_errors') }}
+                  <!-- <br />({{ $t('words_limit') }}) -->
                 </p>
               </div>
               <div v-show="result.data?.translated" style="white-space: pre-line">
