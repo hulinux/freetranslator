@@ -41,19 +41,19 @@ const createiFrame = function (url: string) {
 const hideIFrame = () => {
   if (iFrame) {
     iFrame.hidden = true;
-    Object.assign(iFrame.style, { display: 'none' });
   } else {
     createiFrame(START_URL);
   }
+  Object.assign(iFrame.style, { display: 'none' });
 };
 
 const showIFrame = () => {
   if (iFrame) {
     iFrame.hidden = false;
-    Object.assign(iFrame.style, { display: 'block' });
   } else {
     createiFrame(START_URL);
   }
+  Object.assign(iFrame.style, { display: 'block' });
 };
 const setFrameSize = function (frame: HTMLIFrameElement, size: FrameSize) {
   frame.style.height =
